@@ -27,8 +27,8 @@ lat_lngs = []
 cities = []
 
 # Create a set of random lat and lng combinations
-lats = np.random.uniform(low=-90.000, high=90.000, size=3000)
-lngs = np.random.uniform(low=-180.000, high=180.000, size=3000)
+lats = np.random.uniform(low=-90.000, high=90.000, size=1500)
+lngs = np.random.uniform(low=-180.000, high=180.000, size=1500)
 lat_lngs = zip(lats, lngs)
 
 # Identify nearest city for each lat, lng combination
@@ -76,7 +76,7 @@ weather_data.head()
 # Loop API requests for each city in DataFrame to get all the relevant data
 for index, city in weather_data.iterrows():
     response = requests.get(query_url + city[0]).json()
-    print({city[0]})
+    print({index},'-',{city[0]})
     try:
         weather_data.loc[index, 'Name'] = response['name']
         weather_data.loc[index, 'Country'] = response['sys']['country']
@@ -117,6 +117,8 @@ weather_data = pd.DataFrame({'City': weather_data['Name'],
 weather_data['Temperature (C)'].replace('', np.nan, inplace=True)
 weather_data.dropna(subset=['Temperature (C)'], how='any', inplace=True)
 
+weather_data.to_csv('Analysis/Weather_Data.csv', index=False)
+
 weather_data.head()
 
 ## Latitude vs Temperature Plot
@@ -132,7 +134,7 @@ plt.ylabel('Temperature (C)')
 plt.grid()
 
 # Save Figure
-plt.savefig('Analysis/Temperature_vs_Latitude.png')
+plt.savefig('Analysis/Temperature_vs_Latitude.png', dpi=350)
 plt.show()
 
 ## Latitude vs. Humidity Plot
@@ -148,7 +150,7 @@ plt.ylabel('Humidity')
 plt.grid()
 
 # Save Figure
-plt.savefig('Analysis/Humidity_vs_Latitude.png')
+plt.savefig('Analysis/Humidity_vs_Latitude.png', dpi=350)
 plt.show()
 
 ## Latitude vs. Cloudiness Plot
@@ -164,7 +166,7 @@ plt.ylabel('Cloud Cover (%)')
 plt.grid()
 
 # Save Figure
-plt.savefig('Analysis/CloudCover_vs_Latitude.png')
+plt.savefig('Analysis/CloudCover_vs_Latitude.png', dpi=350)
 plt.show()
 
 ## Latitude vs. Wind Speed Plot
@@ -180,5 +182,12 @@ plt.ylabel('Wind Speed (km/h)')
 plt.grid()
 
 # Save Figure
-plt.savefig('Analysis/WindSpeed_vs_Latitude.png')
+plt.savefig('Analysis/WindSpeed_vs_Latitude.png', dpi=350)
 plt.show()
+
+## Analysis
+
+From the Temperature vs Latitude scatter plot, we can not only confirm that it is indeed much warmer near the equator, we can also observe that the warmth is tilted north due to the northern hemisphere being in the summer.
+From the Wind Speed vs Latitude scatter plot, we can observe slightly higher wind speeds in the northern hemisphere. This may be due to higher temperatures causing higher winds.
+We can also observe from the Humidity vs Latitude plot that the higher temperature in the upper hemisphere also increases humidity.
+In the Coud Cover vs Latitude plot we can only observe that clear skies are very common.
